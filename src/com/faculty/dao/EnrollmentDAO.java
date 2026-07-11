@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Enrollment CRUD operations
+ * ECO
  */
 public class EnrollmentDAO {
 
