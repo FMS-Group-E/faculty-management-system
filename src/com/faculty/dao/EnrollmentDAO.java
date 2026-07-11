@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ECO
+ * E n r o l l m e n t   D A O
  */
 public class EnrollmentDAO {
 
