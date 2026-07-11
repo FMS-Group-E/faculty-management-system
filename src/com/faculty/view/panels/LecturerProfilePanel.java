@@ -136,7 +136,7 @@ public class LecturerProfilePanel extends JPanel {
         row = addRow(card, gbc, row, "New Password",     newPassField);
         row = addRow(card, gbc, row, "Confirm Password", confPassField);
 
-        // Update Password Button
+        // Update Password
         gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
         gbc.insets = new Insets(20, 12, 12, 12);
         JButton changePwdBtn = UITheme.primaryButton("Update Password");

@@ -11,7 +11,7 @@ public class Lecturer {
     private String email;
     private String mobile;
     private int    departmentId;
-    private String departmentName; // for display
+    private String departmentName; 
     private String specialization;
 
     public Lecturer() {}

@@ -24,7 +24,7 @@ public class LecturerCoursesPanel extends JPanel {
     }
 
     private void buildUI() {
-        // --- HEADER ---
+        // Header
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(UITheme.BG_DARK);
 
@@ -47,7 +47,7 @@ public class LecturerCoursesPanel extends JPanel {
 
         add(headerPanel, BorderLayout.NORTH);
 
-        // --- TABLE ---
+        // Table
         String[] cols = {"#", "Code", "Course Name", "Credits", "Semester", "Department"};
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             @Override
@@ -75,7 +75,7 @@ public class LecturerCoursesPanel extends JPanel {
 
         add(UITheme.styledScrollPane(table), BorderLayout.CENTER);
 
-        // --- FOOTER ---
+        // Footer
         JPanel footerPanel = new JPanel(new BorderLayout());
         footerPanel.setBackground(UITheme.BG_DARK);
         footerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
