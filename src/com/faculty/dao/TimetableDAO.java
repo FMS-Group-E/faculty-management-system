@@ -11,9 +11,7 @@ import java.util.List;
  */
 public class TimetableDAO {
 
-    /**
-     * Get timetable rows for students
-     */
+    /*Get timetable rows for students*/
     public List<Object[]> getTimetableForStudent(int studentId) {
         List<Object[]> rows = new ArrayList<>();
         String sql =
@@ -46,9 +44,7 @@ public class TimetableDAO {
         return rows;
     }
 
-    /**
-     * Get timetable rows for lecturer
-     */
+    /*Get timetable rows for lecturer*/
     public List<Object[]> getTimetableForLecturer(int lecturerId) {
         List<Object[]> rows = new ArrayList<>();
         String sql =
@@ -79,9 +75,7 @@ public class TimetableDAO {
         return rows;
     }
 
-    /**
-     * Update an existing timetable
-     */
+    /*Update an existing timetable*/
     public boolean updateTimetableEntry(int timetableId, String day, String startTime, String endTime, String location) {
         String sql = "UPDATE timetable SET day_of_week = ?, start_time = ?, end_time = ?, location = ? WHERE timetable_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();

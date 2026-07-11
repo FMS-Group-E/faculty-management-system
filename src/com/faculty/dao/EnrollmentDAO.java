@@ -7,9 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * E n r o l l m e n t   D A O
- */
+/*EnrollmentDAO*/
 public class EnrollmentDAO {
 
     public List<Enrollment> findByStudentId(int studentId) {
