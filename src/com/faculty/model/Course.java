@@ -1,17 +1,14 @@
 package com.faculty.model;
 
-/**
- * Model: Course entity.
- */
 public class Course {
     private int    courseId;
     private String courseCode;
     private String courseName;
     private int    credits;
     private int    departmentId;
-    private String departmentName; // for display
+    private String departmentName;
     private int    lecturerId;
-    private String lecturerName;   // for display
+    private String lecturerName;
     private int    semester;
     private String description;
 
