@@ -42,9 +42,9 @@ public class LecturerProfilePanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
 
-        JLabel title = new JLabel("My Profile");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        JLabel title = new JLabel("Profile Details");
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
         JLabel subtitle = new JLabel("View and update your professional information and department details.");
         subtitle.setFont(UITheme.FONT_BODY);

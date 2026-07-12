@@ -147,7 +147,7 @@ public class LucideIcon implements Icon {
 
             case "live":
                 // Blinking or simple pulse dot
-                g2.setColor(new Color(6, 182, 212));
+                g2.setColor(UITheme.PRIMARY);
                 g2.fillOval(8, 8, 8, 8);
                 break;
 

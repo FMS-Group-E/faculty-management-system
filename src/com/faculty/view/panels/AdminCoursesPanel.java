@@ -44,9 +44,9 @@ public class AdminCoursesPanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
         
-        JLabel title = new JLabel("Course Directory");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        JLabel title = new JLabel("Courses");
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
         JLabel subtitle = new JLabel("Manage faculty course offerings, credit metrics, and assigned lecturers.");
         subtitle.setFont(UITheme.FONT_BODY);
@@ -61,16 +61,13 @@ public class AdminCoursesPanel extends JPanel {
         JPanel actionBtnGrid = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actionBtnGrid.setBackground(UITheme.BG_DARK);
         
-        JButton addBtn    = UITheme.primaryButton("Add Course");
-        addBtn.setIcon(new LucideIcon("course", 14, Color.WHITE));
+        JButton addBtn    = UITheme.primaryButton("Add new");
         addBtn.setIconTextGap(8);
         
-        JButton editBtn   = UITheme.successButton("Edit");
-        editBtn.setIcon(new LucideIcon("edit", 14, Color.WHITE));
+        JButton editBtn   = UITheme.secondaryButton("Edit");
         editBtn.setIconTextGap(8);
         
-        JButton deleteBtn = UITheme.dangerButton("Delete");
-        deleteBtn.setIcon(new LucideIcon("trash", 14, Color.WHITE));
+        JButton deleteBtn = UITheme.secondaryButton("Delete");
         deleteBtn.setIconTextGap(8);
         
         addBtn.addActionListener(e -> showForm(null));

@@ -32,9 +32,9 @@ public class StudentCoursesPanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
 
-        JLabel title = new JLabel("My Enrolled Courses");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        JLabel title = new JLabel("Course Enrolled");
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
         JLabel subtitle = new JLabel("View your current course enrollments and grade statuses.");
         subtitle.setFont(UITheme.FONT_BODY);

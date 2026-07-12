@@ -34,9 +34,9 @@ public class StudentTimetablePanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
 
-        JLabel title = new JLabel("My Timetable");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        JLabel title = new JLabel("Time table");
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
         JLabel subtitle = new JLabel("View your weekly class schedule, locations, and assigned lecturers.");
         subtitle.setFont(UITheme.FONT_BODY);

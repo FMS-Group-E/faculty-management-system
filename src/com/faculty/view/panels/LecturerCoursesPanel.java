@@ -33,7 +33,7 @@ public class LecturerCoursesPanel extends JPanel {
         titlePanel.setBackground(UITheme.BG_DARK);
 
         JLabel title = new JLabel("My Teaching Courses");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        title.setFont(new Font("Helvetica", Font.BOLD, 28));
         title.setForeground(UITheme.TEXT_PRIMARY);
 
         JLabel subtitle = new JLabel("View courses you are currently assigned to teach this semester.");

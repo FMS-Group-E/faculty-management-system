@@ -39,9 +39,9 @@ public class StudentProfilePanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
 
-        JLabel title = new JLabel("My Profile");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        JLabel title = new JLabel("Profile Details");
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
         JLabel subtitle = new JLabel("View and update your personal information and academic details.");
         subtitle.setFont(UITheme.FONT_BODY);
@@ -97,13 +97,9 @@ public class StudentProfilePanel extends JPanel {
             }
         }
 
-        // Save button
-        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
-        gbc.insets = new Insets(20, 12, 12, 12);
-        JButton saveBtn = UITheme.primaryButton("Save Changes");
-        saveBtn.setIcon(new LucideIcon("edit", 14, Color.WHITE));
-        saveBtn.setIconTextGap(8);
-        saveBtn.setPreferredSize(new Dimension(200, 40));
+        JButton saveBtn = UITheme.primaryButton("Save changes");
+        saveBtn.setPreferredSize(new Dimension(300, 42));
+        saveBtn.setFont(new Font("Helvetica", Font.BOLD, 14));
         saveBtn.addActionListener(e -> saveProfile());
         card.add(saveBtn, gbc);
         row++;

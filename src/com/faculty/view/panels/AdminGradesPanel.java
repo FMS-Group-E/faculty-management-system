@@ -49,11 +49,11 @@ public class AdminGradesPanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
 
-        JLabel title = new JLabel("Grade Management");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        JLabel title = new JLabel("Grades");
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
-        JLabel subtitle = new JLabel("Assign grades to students, register new course enrollments, or remove students from courses.");
+        JLabel subtitle = new JLabel("Assign grades to students, register new course enrollments");
         subtitle.setFont(UITheme.FONT_BODY);
         subtitle.setForeground(UITheme.TEXT_MUTED);
 
@@ -66,16 +66,13 @@ public class AdminGradesPanel extends JPanel {
         JPanel actionBtnGrid = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actionBtnGrid.setBackground(UITheme.BG_DARK);
 
-        JButton addBtn = UITheme.primaryButton("Enroll Student");
-        addBtn.setIcon(new LucideIcon("student", 14, Color.WHITE));
+        JButton addBtn    = UITheme.primaryButton("Add new");
         addBtn.setIconTextGap(8);
 
-        JButton editBtn = UITheme.successButton("Edit Grade");
-        editBtn.setIcon(new LucideIcon("edit", 14, Color.WHITE));
+        JButton editBtn   = UITheme.secondaryButton("Edit Grade");
         editBtn.setIconTextGap(8);
 
-        JButton deleteBtn = UITheme.dangerButton("Delete");
-        deleteBtn.setIcon(new LucideIcon("trash", 14, Color.WHITE));
+        JButton deleteBtn = UITheme.secondaryButton("Delete");
         deleteBtn.setIconTextGap(8);
 
         addBtn.addActionListener(e -> showAddEnrollmentForm());

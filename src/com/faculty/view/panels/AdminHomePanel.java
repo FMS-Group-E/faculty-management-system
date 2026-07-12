@@ -25,8 +25,8 @@ public class AdminHomePanel extends JPanel {
         titlePanel.setBackground(UITheme.BG_DARK);
         
         JLabel title = new JLabel("Overview");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
         JLabel subtitle = new JLabel("Real-time metrics compiled from the database.");
         subtitle.setFont(UITheme.FONT_BODY);
@@ -121,11 +121,11 @@ public class AdminHomePanel extends JPanel {
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 
         JLabel titleLbl = new JLabel(title);
-        titleLbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        titleLbl.setFont(new Font("Helvetica", Font.BOLD, 12));
         titleLbl.setForeground(UITheme.TEXT_MUTED);
 
         JLabel countLbl = new JLabel(count);
-        countLbl.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        countLbl.setFont(new Font("Helvetica", Font.BOLD, 32));
         countLbl.setForeground(UITheme.TEXT_PRIMARY);
 
         content.add(titleLbl);

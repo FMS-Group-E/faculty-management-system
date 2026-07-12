@@ -22,96 +22,132 @@ public class LoginView extends JFrame {
     private void initComponents() {
         setTitle("Faculty Management System - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(420, 560);
+        setSize(680, 420);
         setLocationRelativeTo(null);
         setResizable(false);
 
-        // Main panel with dark background
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(UITheme.BG_DARK);
-        setContentPane(mainPanel);
+        // Root split panel
+        JPanel root = new JPanel(new GridLayout(1, 2));
+        setContentPane(root);
 
-        // Center card
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(UITheme.BG_CARD);
-        card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(UITheme.BORDER_COLOR),
-            BorderFactory.createEmptyBorder(40, 40, 40, 40)
-        ));
+        // ── LEFT PANEL (blue gradient) ─────────────────────────────────────
+        JPanel leftPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                GradientPaint gp = new GradientPaint(
+                    0, 0, UITheme.PRIMARY,
+                    0, getHeight(), UITheme.PRIMARY_DARK
+                );
+                g2.setPaint(gp);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(40, 30, 40, 30));
 
-        // Title
-        JLabel titleLabel = new JLabel("FacultyPortal", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        titleLabel.setForeground(UITheme.TEXT_PRIMARY);
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftPanel.add(Box.createVerticalGlue());
 
-        JLabel subtitleLabel = new JLabel("Academic Administration System", SwingConstants.CENTER);
-        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        subtitleLabel.setForeground(UITheme.TEXT_MUTED);
-        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel sysTitle = new JLabel("<html><center>Faculty Management<br>System</center></html>", SwingConstants.CENTER);
+        sysTitle.setFont(new Font("Helvetica", Font.BOLD, 20));
+        sysTitle.setForeground(Color.WHITE);
+        sysTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftPanel.add(sysTitle);
 
-        // Divider
-        JSeparator sep = new JSeparator();
-        sep.setForeground(UITheme.BORDER_COLOR);
-        sep.setBackground(UITheme.BORDER_COLOR);
-        sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        leftPanel.add(Box.createVerticalGlue());
 
+        JLabel facLabel = new JLabel("Faculty of Computing & Technology", SwingConstants.CENTER);
+        facLabel.setFont(new Font("Helvetica", Font.BOLD, 11));
+        facLabel.setForeground(new Color(191, 219, 254));
+        facLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftPanel.add(facLabel);
 
-        // Form panel
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(UITheme.BG_CARD);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets   = new Insets(6, 0, 6, 0);
-        gbc.fill     = GridBagConstraints.HORIZONTAL;
-        gbc.weightx  = 1.0;
+        leftPanel.add(Box.createVerticalStrut(6));
 
+        JLabel tagLine = new JLabel("Manage your academic journey", SwingConstants.CENTER);
+        tagLine.setFont(new Font("Helvetica", Font.PLAIN, 11));
+        tagLine.setForeground(new Color(147, 197, 253));
+        tagLine.setAlignmentX(Component.CENTER_ALIGNMENT);
+        leftPanel.add(tagLine);
+
+        // ── RIGHT PANEL (white) ────────────────────────────────────────────
+        JPanel rightPanel = new JPanel();
+        rightPanel.setBackground(Color.WHITE);
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBorder(BorderFactory.createEmptyBorder(40, 36, 40, 36));
+
+        // "Sign In" heading
+        JLabel signInHeading = new JLabel("Sign In");
+        signInHeading.setFont(new Font("Helvetica", Font.BOLD, 20));
+        signInHeading.setForeground(UITheme.TEXT_PRIMARY);
+        signInHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(signInHeading);
+
+        // Underline accent
+        JPanel accent = new JPanel();
+        accent.setBackground(UITheme.PRIMARY);
+        accent.setMaximumSize(new Dimension(40, 3));
+        accent.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(Box.createVerticalStrut(4));
+        rightPanel.add(accent);
+        rightPanel.add(Box.createVerticalStrut(24));
+
+        // ── Form ──────────────────────────────────────────────────────────
         // Username
-        gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(UITheme.label("USERNAME"), gbc);
-        gbc.gridy = 1;
+        JLabel userLbl = fieldLabel("Username");
+        userLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(userLbl);
+        rightPanel.add(Box.createVerticalStrut(5));
+
         usernameField = UITheme.styledField();
-        usernameField.setPreferredSize(new Dimension(300, 40));
-        formPanel.add(usernameField, gbc);
+        usernameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        usernameField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(usernameField);
+        rightPanel.add(Box.createVerticalStrut(14));
 
         // Password
-        gbc.gridy = 2;
-        formPanel.add(UITheme.label("PASSWORD"), gbc);
-        gbc.gridy = 3;
+        JLabel passLbl = fieldLabel("Password");
+        passLbl.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(passLbl);
+        rightPanel.add(Box.createVerticalStrut(5));
+
         passwordField = UITheme.styledPasswordField();
-        passwordField.setPreferredSize(new Dimension(300, 40));
-        formPanel.add(passwordField, gbc);
+        passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        passwordField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(passwordField);
+        rightPanel.add(Box.createVerticalStrut(16));
 
         // Error label
-        gbc.gridy = 4;
         errorLabel = new JLabel(" ");
         errorLabel.setFont(UITheme.FONT_SMALL);
         errorLabel.setForeground(UITheme.DANGER);
-        formPanel.add(errorLabel, gbc);
+        errorLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(errorLabel);
+        rightPanel.add(Box.createVerticalStrut(4));
 
-        // Login button
-        gbc.gridy = 5;
+        // Sign In button
         loginButton = UITheme.primaryButton("Sign In");
+        loginButton.setFont(new Font("Helvetica", Font.BOLD, 15));
         loginButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
-        loginButton.setPreferredSize(new Dimension(300, 44));
-        loginButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        formPanel.add(loginButton, gbc);
+        loginButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.add(loginButton);
 
-        card.add(titleLabel);
-        card.add(subtitleLabel);
-        card.add(Box.createVerticalStrut(20));
-        card.add(sep);
-        card.add(Box.createVerticalStrut(24));
-        card.add(formPanel);
-
-        // Outer padding
-        JPanel outerPad = new JPanel(new GridBagLayout());
-        outerPad.setBackground(UITheme.BG_DARK);
-        outerPad.add(card);
-        mainPanel.add(outerPad, BorderLayout.CENTER);
-
+        root.add(leftPanel);
+        root.add(rightPanel);
     }
 
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    private JLabel fieldLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(new Font("Helvetica", Font.BOLD, 13));
+        lbl.setForeground(UITheme.PRIMARY);
+        return lbl;
+    }
+
+    // ── Accessors used by LoginController ────────────────────────────────────
     public JTextField     getUsernameField() { return usernameField; }
     public JPasswordField getPasswordField() { return passwordField; }
     public JButton        getLoginButton()   { return loginButton;   }
