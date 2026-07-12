@@ -1,8 +1,3 @@
--- ============================================================
--- Faculty Management System - Database Schema
--- CTEC 22043 Group Assignment
--- ============================================================
-
 CREATE DATABASE IF NOT EXISTS faculty_management_system;
 USE faculty_management_system;
 
