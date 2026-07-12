@@ -82,4 +82,22 @@ public class UserDAO {
         u.setEmail(rs.getString("email"));
         return u;
     }
+
+    /**
+     * Update user's password.
+     */
+    public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newPassword);
+            ps.setInt(2, userId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("UserDAO.updatePassword error: " + e.getMessage());
+        }
+        return false;
+    }
 }
+

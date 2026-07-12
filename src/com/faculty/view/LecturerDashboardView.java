@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Lecturer Dashboard 
+ * View: Dashboard for Lecturer role with top bar header and vector icons.
  */
 public class LecturerDashboardView extends JFrame {
 
@@ -37,7 +37,7 @@ public class LecturerDashboardView extends JFrame {
         JPanel sidebar = buildSidebar();
         add(sidebar, BorderLayout.WEST);
 
-        //Main area
+        // Main content wrapper
         JPanel mainArea = new JPanel(new BorderLayout());
         mainArea.setBackground(UITheme.BG_DARK);
 

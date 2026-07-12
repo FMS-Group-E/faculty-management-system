@@ -14,7 +14,7 @@ import com.faculty.view.LecturerDashboardView;
 import javax.swing.*;
 
 /**
- * Controller: Handles login authentication and role-based navigation.
+ * Logging Controller
  */
 public class LoginController {
 

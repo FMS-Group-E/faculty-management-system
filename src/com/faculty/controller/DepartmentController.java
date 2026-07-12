@@ -6,9 +6,6 @@ import com.faculty.model.Department;
 import javax.swing.*;
 import java.util.List;
 
-/**
- * Controller: Business logic for Department management.
- */
 public class DepartmentController {
 
     private final DepartmentDAO deptDAO = new DepartmentDAO();

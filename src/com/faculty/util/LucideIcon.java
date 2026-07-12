@@ -3,10 +3,6 @@ package com.faculty.util;
 import javax.swing.Icon;
 import java.awt.*;
 
-/**
- * Portable, high-resolution vector icon renderer replicating Lucide React Icons
- * using raw Graphics2D vector operations. Zero dependencies.
- */
 public class LucideIcon implements Icon {
 
     private final String name;
@@ -79,11 +75,10 @@ public class LucideIcon implements Icon {
                 
             case "department":
                 // Landmark building representing departments
-                g2.drawLine(2, 21, 22, 21); // bottom foundation
-                g2.drawPolygon(new int[]{12, 2, 22}, new int[]{2, 9, 9}, 3); // roof triangle
+                g2.drawLine(2, 21, 22, 21);
+                g2.drawPolygon(new int[]{12, 2, 22}, new int[]{2, 9, 9}, 3);
                 g2.drawLine(3, 9, 21, 9);
                 g2.drawLine(4, 12, 20, 12);
-                // Columns
                 g2.drawLine(6, 12, 6, 21);
                 g2.drawLine(10, 12, 10, 21);
                 g2.drawLine(14, 12, 14, 21);
@@ -92,8 +87,8 @@ public class LucideIcon implements Icon {
                 
             case "degree":
                 // Award medal ribbon
-                g2.drawOval(6, 3, 12, 12); // outer medal
-                g2.drawOval(8, 5, 8, 8);   // inner details
+                g2.drawOval(6, 3, 12, 12);
+                g2.drawOval(8, 5, 8, 8);   
                 // Ribbons hanging down
                 g2.drawPolyline(new int[]{8, 8, 12, 10}, new int[]{14, 21, 18, 14}, 4);
                 g2.drawPolyline(new int[]{16, 16, 12, 14}, new int[]{14, 21, 18, 14}, 4);
@@ -141,6 +136,13 @@ public class LucideIcon implements Icon {
                 g2.drawPolygon(new int[]{5, 19, 17, 7}, new int[]{6, 6, 21, 21}, 4);
                 g2.drawLine(10, 10, 10, 17);
                 g2.drawLine(14, 10, 14, 17);
+                break;
+
+            case "lock":
+                // Padlock
+                g2.drawRoundRect(5, 10, 14, 11, 2, 2); 
+                g2.drawArc(8, 4, 8, 12, 0, 180); 
+                g2.drawLine(8, 10, 8, 10);
                 break;
 
             case "live":

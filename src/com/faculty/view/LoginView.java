@@ -6,9 +6,6 @@ import com.faculty.util.UITheme;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * View: Login screen for the Faculty Management System.
- */
 public class LoginView extends JFrame {
 
     private JTextField     usernameField;
@@ -42,31 +39,6 @@ public class LoginView extends JFrame {
             BorderFactory.createLineBorder(UITheme.BORDER_COLOR),
             BorderFactory.createEmptyBorder(40, 40, 40, 40)
         ));
-
-        // Logo / Icon Container
-        JPanel iconContainer = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(6, 182, 212, 30));
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
-                g2.setColor(new Color(6, 182, 212));
-                g2.setStroke(new BasicStroke(1.5f));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 16, 16);
-                g2.dispose();
-            }
-        };
-        iconContainer.setPreferredSize(new Dimension(72, 72));
-        iconContainer.setMaximumSize(new Dimension(72, 72));
-        iconContainer.setLayout(new BorderLayout());
-        iconContainer.setOpaque(false);
-        iconContainer.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JLabel iconLabel = new JLabel("🎓", SwingConstants.CENTER);
-        iconLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 36));
-        iconLabel.setForeground(new Color(6, 182, 212));
-        iconContainer.add(iconLabel, BorderLayout.CENTER);
 
         // Title
         JLabel titleLabel = new JLabel("FacultyPortal", SwingConstants.CENTER);
@@ -125,13 +97,6 @@ public class LoginView extends JFrame {
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
         formPanel.add(loginButton, gbc);
 
-        // Hint
-        gbc.gridy = 6;
-        JLabel hintLabel = new JLabel("<html><center><font color='#64748B' size='3'>Default credentials:<br>admin / admin123</font></center></html>", SwingConstants.CENTER);
-        hintLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        formPanel.add(hintLabel, gbc);
-
-        card.add(iconContainer);
         card.add(titleLabel);
         card.add(subtitleLabel);
         card.add(Box.createVerticalStrut(20));

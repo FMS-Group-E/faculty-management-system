@@ -12,23 +12,23 @@ import java.awt.*;
 public class UITheme {
 
     // Color Palette
-    public static final Color PRIMARY      = new Color(6, 182, 212);    // Cyan-500 / Light blue accent
-    public static final Color PRIMARY_DARK = new Color(8, 145, 178);    // Cyan-600
-    public static final Color SECONDARY    = new Color(139, 92, 246);   // Violet-500
+    public static final Color PRIMARY      = new Color(99, 102, 241);   // Violet/Indigo accent (#6366F1)
+    public static final Color PRIMARY_DARK = new Color(79, 70, 229);    // Indigo-600 (#4F46E5)
+    public static final Color SECONDARY    = new Color(139, 92, 246);   // Violet-500 (#8B5CF6)
     public static final Color SUCCESS      = new Color(16, 185, 129);   // Emerald-500
     public static final Color DANGER       = new Color(244, 63, 94);    // Rose-500
     public static final Color WARNING      = new Color(245, 158, 11);   // Amber-500
-    public static final Color BG_DARK      = new Color(9, 9, 11);       // Zinc-950 (Deep dark background)
-    public static final Color BG_CARD      = new Color(18, 18, 24);     // Card background
-    public static final Color BG_SIDEBAR   = new Color(12, 12, 16);     // Sidebar background
-    public static final Color BG_INPUT     = new Color(24, 24, 32);     // Input field background
-    public static final Color TEXT_PRIMARY = new Color(244, 244, 245);  // Zinc-100
-    public static final Color TEXT_MUTED   = new Color(161, 161, 170);  // Zinc-400
-    public static final Color BORDER_COLOR = new Color(39, 39, 42);     // Zinc-800
-    public static final Color TABLE_HEADER = new Color(24, 24, 32);
-    public static final Color TABLE_ROW_EVEN = new Color(18, 18, 24);
-    public static final Color TABLE_ROW_ODD  = new Color(24, 24, 32);
-    public static final Color TABLE_SELECT  = new Color(6, 182, 212, 40);
+    public static final Color BG_DARK      = new Color(248, 250, 252);  // Slate-50 (Very light gray bg)
+    public static final Color BG_CARD      = Color.WHITE;               // Card background
+    public static final Color BG_SIDEBAR   = new Color(255, 255, 255);  // Sidebar background (pure white)
+    public static final Color BG_INPUT     = new Color(248, 250, 252);  // Input background (Slate-50)
+    public static final Color TEXT_PRIMARY = new Color(15, 23, 42);     // Slate-900 (Dark text)
+    public static final Color TEXT_MUTED   = new Color(100, 116, 139);  // Slate-500 (Muted text)
+    public static final Color BORDER_COLOR = new Color(226, 232, 240);  // Slate-200
+    public static final Color TABLE_HEADER = new Color(241, 245, 249);  // Slate-100
+    public static final Color TABLE_ROW_EVEN = Color.WHITE;
+    public static final Color TABLE_ROW_ODD  = new Color(248, 250, 252); // Slate-50
+    public static final Color TABLE_SELECT  = new Color(99, 102, 241, 30);
 
 
     // Fonts

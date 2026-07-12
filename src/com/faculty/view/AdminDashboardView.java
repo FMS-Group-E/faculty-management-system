@@ -106,6 +106,10 @@ public class AdminDashboardView extends JFrame {
         sidebar.add(sidebarBtn("Courses", "course", "courses", "Course Management"));
         sidebar.add(sidebarBtn("Departments", "department", "departments", "Department Management"));
         sidebar.add(sidebarBtn("Degrees", "degree", "degrees", "Degree Management"));
+        sidebar.add(sidebarBtn("Grades", "generate", "grades", "Grade Management"));
+
+        sidebar.add(sectionLabel("SYSTEM"));
+        sidebar.add(sidebarBtn("Settings", "lock", "settings", "Settings"));
 
         
         // Center the button in sidebar padding
@@ -202,6 +206,8 @@ public class AdminDashboardView extends JFrame {
             case "courses":     panel = new AdminCoursesPanel();     break;
             case "departments": panel = new AdminDepartmentsPanel(); break;
             case "degrees":     panel = new AdminDegreesPanel();     break;
+            case "grades":      panel = new AdminGradesPanel();      break;
+            case "settings":    panel = new AdminSettingsPanel(user);break;
             default:            panel = new AdminHomePanel();        break;
         }
         contentArea.add(panel, BorderLayout.CENTER);

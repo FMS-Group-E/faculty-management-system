@@ -6,9 +6,6 @@ import com.faculty.model.Degree;
 import javax.swing.*;
 import java.util.List;
 
-/**
- * Controller: Business logic for Degree management.
- */
 public class DegreeController {
 
     private final DegreeDAO degreeDAO = new DegreeDAO();

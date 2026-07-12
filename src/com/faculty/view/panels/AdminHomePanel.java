@@ -1,20 +1,12 @@
 package com.faculty.view.panels;
 
 import com.faculty.dao.*;
-import com.faculty.model.Enrollment;
 import com.faculty.util.UITheme;
 import com.faculty.util.LucideIcon;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.List;
 
-/**
- * Panel: Admin home with premium stat cards, Live Database Enrollments, and System Information.
- * All demo/mock data has been removed and replaced with dynamic database statistics.
- */
 public class AdminHomePanel extends JPanel {
 
     public AdminHomePanel() {
@@ -101,7 +93,7 @@ public class AdminHomePanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 25)); // ~10% opacity
+                g2.setColor(new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 25));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
                 g2.dispose();
             }

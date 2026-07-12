@@ -8,7 +8,7 @@ public class Degree {
     private String degreeName;
     private String degreeCode;
     private int    departmentId;
-    private String departmentName; // for display
+    private String departmentName;
     private int    durationYears;
     private String description;
 
