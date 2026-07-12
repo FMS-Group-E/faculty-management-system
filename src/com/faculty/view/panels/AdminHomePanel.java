@@ -1,20 +1,12 @@
 package com.faculty.view.panels;
 
 import com.faculty.dao.*;
-import com.faculty.model.Enrollment;
 import com.faculty.util.UITheme;
 import com.faculty.util.LucideIcon;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.List;
 
-/**
- * Panel: Admin home with premium stat cards, Live Database Enrollments, and System Information.
- * All demo/mock data has been removed and replaced with dynamic database statistics.
- */
 public class AdminHomePanel extends JPanel {
 
     public AdminHomePanel() {
@@ -33,8 +25,8 @@ public class AdminHomePanel extends JPanel {
         titlePanel.setBackground(UITheme.BG_DARK);
         
         JLabel title = new JLabel("Overview");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        title.setForeground(UITheme.TEXT_PRIMARY);
+        title.setFont(new Font("Helvetica", Font.BOLD, 24));
+        title.setForeground(UITheme.PRIMARY);
 
         JLabel subtitle = new JLabel("Real-time metrics compiled from the database.");
         subtitle.setFont(UITheme.FONT_BODY);
@@ -101,7 +93,7 @@ public class AdminHomePanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 25)); // ~10% opacity
+                g2.setColor(new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 25));
                 g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
                 g2.dispose();
             }
@@ -129,11 +121,11 @@ public class AdminHomePanel extends JPanel {
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 
         JLabel titleLbl = new JLabel(title);
-        titleLbl.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        titleLbl.setFont(new Font("Helvetica", Font.BOLD, 12));
         titleLbl.setForeground(UITheme.TEXT_MUTED);
 
         JLabel countLbl = new JLabel(count);
-        countLbl.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        countLbl.setFont(new Font("Helvetica", Font.BOLD, 32));
         countLbl.setForeground(UITheme.TEXT_PRIMARY);
 
         content.add(titleLbl);

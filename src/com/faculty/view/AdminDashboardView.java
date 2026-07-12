@@ -9,13 +9,14 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * View: Dashboard for Admin role with full CRUD navigation and vector icons.
+ * View: Admin Dashboard – blue solid sidebar + white content area.
  */
 public class AdminDashboardView extends JFrame {
 
-    private final User  user;
-    private JPanel contentArea;
-    private JLabel pageTitle;
+    private final User   user;
+    private JPanel       contentArea;
+    private JLabel       pageTitle;
+    private JButton      activeNavBtn = null;
 
     public AdminDashboardView(User user) {
         this.user = user;
@@ -23,11 +24,10 @@ public class AdminDashboardView extends JFrame {
     }
 
     private void initUI() {
-        setTitle("FacultyPortal - Admin Dashboard");
+        setTitle("FMS - Admin Dashboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 750);
         setLocationRelativeTo(null);
-
         setLayout(new BorderLayout());
 
         add(buildSidebar(), BorderLayout.WEST);
@@ -35,165 +35,189 @@ public class AdminDashboardView extends JFrame {
         JPanel mainArea = new JPanel(new BorderLayout());
         mainArea.setBackground(UITheme.BG_DARK);
 
-        // Top bar
-        JPanel topBar = new JPanel(new BorderLayout());
-        topBar.setBackground(UITheme.BG_CARD);
-        topBar.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createMatteBorder(0, 0, 1, 0, UITheme.BORDER_COLOR),
-            BorderFactory.createEmptyBorder(14, 24, 14, 24)
-        ));
-        pageTitle = new JLabel("Dashboard");
-        pageTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        pageTitle.setForeground(UITheme.TEXT_PRIMARY);
-        topBar.add(pageTitle, BorderLayout.WEST);
-
-        JLabel userLabel = new JLabel("Admin: " + user.getUsername());
-        userLabel.setFont(UITheme.FONT_BODY);
-        userLabel.setForeground(UITheme.TEXT_MUTED);
-        topBar.add(userLabel, BorderLayout.EAST);
-
-        mainArea.add(topBar, BorderLayout.NORTH);
-
         contentArea = new JPanel(new BorderLayout());
         contentArea.setBackground(UITheme.BG_DARK);
         contentArea.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
         mainArea.add(contentArea, BorderLayout.CENTER);
         add(mainArea, BorderLayout.CENTER);
 
-        showPanel("home");
+        showPanel("students", "Student Management");
     }
+
+    // ── Sidebar ───────────────────────────────────────────────────────────────
 
     private JPanel buildSidebar() {
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
         sidebar.setBackground(UITheme.BG_SIDEBAR);
-        sidebar.setPreferredSize(new Dimension(240, 0));
-        sidebar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, UITheme.BORDER_COLOR));
+        sidebar.setPreferredSize(new Dimension(220, 0));
 
-        // Logo Panel with clean alignment
-        JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 16, 18));
-        logoPanel.setBackground(UITheme.BG_SIDEBAR);
-        logoPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        // ── Greeting banner ───────────────────────────────────────────────
+        JPanel greetPanel = new JPanel();
+        greetPanel.setLayout(new BoxLayout(greetPanel, BoxLayout.Y_AXIS));
+        greetPanel.setBackground(UITheme.BG_SIDEBAR);
+        greetPanel.setBorder(BorderFactory.createEmptyBorder(28, 20, 18, 20));
+        greetPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        greetPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
 
-        JLabel logoIcon = new JLabel(new LucideIcon("student", 28, UITheme.PRIMARY));
+        // Avatar icon
+        JLabel avatarIcon = new JLabel(new LucideIcon("student", 32, Color.WHITE));
+        avatarIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
+        greetPanel.add(avatarIcon);
+        greetPanel.add(Box.createVerticalStrut(10));
 
-        JPanel textPanel = new JPanel();
-        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-        textPanel.setBackground(UITheme.BG_SIDEBAR);
+        JLabel greetLbl = new JLabel("Welcome, Admin");
+        greetLbl.setFont(new Font("Helvetica", Font.BOLD, 16));
+        greetLbl.setForeground(Color.WHITE);
+        greetLbl.setAlignmentX(Component.CENTER_ALIGNMENT);
+        greetPanel.add(greetLbl);
 
-        JLabel logoText = new JLabel("FacultyPortal");
-        logoText.setFont(new Font("Segoe UI", Font.BOLD, 17));
-        logoText.setForeground(UITheme.TEXT_PRIMARY);
+        sidebar.add(greetPanel);
 
-        JLabel logoSubText = new JLabel("ACADEMIC ADMIN");
-        logoSubText.setFont(new Font("Segoe UI", Font.BOLD, 9));
-        logoSubText.setForeground(UITheme.TEXT_MUTED);
+        // Separator
+        sidebar.add(sidebarSep());
+        sidebar.add(Box.createVerticalStrut(10));
 
-        textPanel.add(logoText);
-        textPanel.add(logoSubText);
+        // ── Nav buttons ───────────────────────────────────────────────────
+        JButton studentsBtn    = navBtn("Students",    "student",    "students",    "Student Management");
+        JButton lecturersBtn   = navBtn("Lecturers",   "lecturer",   "lecturers",   "Lecturer Management");
+        JButton coursesBtn     = navBtn("Courses",     "course",     "courses",     "Course Management");
+        JButton departmentsBtn = navBtn("Departments", "department", "departments", "Department Management");
+        JButton degreesBtn     = navBtn("Degrees",     "degree",     "degrees",     "Degree Management");
+        JButton gradesBtn      = navBtn("Grades",      "generate",   "grades",      "Grade Management");
 
-        logoPanel.add(logoIcon);
-        logoPanel.add(textPanel);
-        sidebar.add(logoPanel);
-
-        sidebar.add(Box.createVerticalStrut(12));
-        sidebar.add(sectionLabel("OVERVIEW"));
-        sidebar.add(sidebarBtn("Dashboard", "dashboard", "home", "Dashboard"));
-
-        sidebar.add(sectionLabel("MANAGEMENT"));
-        sidebar.add(sidebarBtn("Students", "student", "students", "Student Management"));
-        sidebar.add(sidebarBtn("Lecturers", "lecturer", "lecturers", "Lecturer Management"));
-        sidebar.add(sidebarBtn("Courses", "course", "courses", "Course Management"));
-        sidebar.add(sidebarBtn("Departments", "department", "departments", "Department Management"));
-        sidebar.add(sidebarBtn("Degrees", "degree", "degrees", "Degree Management"));
-
-        
-        // Center the button in sidebar padding
-        JPanel btnWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        btnWrapper.setBackground(UITheme.BG_SIDEBAR);
-        btnWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btnWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        sidebar.add(btnWrapper);
-
+        sidebar.add(studentsBtn);
+        sidebar.add(lecturersBtn);
+        sidebar.add(coursesBtn);
+        sidebar.add(departmentsBtn);
+        sidebar.add(degreesBtn);
+        sidebar.add(gradesBtn);
 
         sidebar.add(Box.createVerticalGlue());
-        sidebar.add(sidebarSep());
 
+        // ── Logout circle button ──────────────────────────────────────────
+        JPanel logoutWrapper = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
+        logoutWrapper.setBackground(UITheme.BG_SIDEBAR);
+        logoutWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+        logoutWrapper.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
 
-        // Sign Out
-        JButton logoutBtn = new JButton("Sign Out");
-        logoutBtn.setIcon(new LucideIcon("logout", 18, UITheme.DANGER));
-        logoutBtn.setIconTextGap(12);
-        logoutBtn.setFont(UITheme.FONT_BODY);
-        logoutBtn.setForeground(UITheme.DANGER);
-        logoutBtn.setBackground(UITheme.BG_SIDEBAR);
-        logoutBtn.setBorderPainted(false);
-        logoutBtn.setFocusPainted(false);
-        logoutBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        logoutBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        logoutBtn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        logoutBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        logoutBtn.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
+        JButton logoutBtn = circleLogoutButton();
         logoutBtn.addActionListener(e -> {
             dispose();
             SwingUtilities.invokeLater(() -> new LoginView().setVisible(true));
         });
-        sidebar.add(logoutBtn);
-        sidebar.add(Box.createVerticalStrut(8));
+        logoutWrapper.add(logoutBtn);
+        sidebar.add(logoutWrapper);
+
         return sidebar;
     }
 
-    private JLabel sectionLabel(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 10));
-        lbl.setForeground(UITheme.TEXT_MUTED);
-        lbl.setBorder(BorderFactory.createEmptyBorder(16, 16, 6, 16));
-        lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return lbl;
-    }
+    /** Sidebar nav button: icon left + text, hover = darker blue bg */
+    private JButton navBtn(String text, String iconName, String panelKey, String title) {
+        JButton btn = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+            }
+        };
+        LucideIcon defIcon = new LucideIcon(iconName, 18, UITheme.SIDEBAR_TEXT_MUTED);
+        LucideIcon hovIcon = new LucideIcon(iconName, 18, Color.WHITE);
 
-    private JButton sidebarBtn(String text, String iconName, String panelName, String title) {
-        JButton btn = new JButton(text);
-        LucideIcon defIcon = new LucideIcon(iconName, 18, UITheme.TEXT_MUTED);
-        LucideIcon hovIcon = new LucideIcon(iconName, 18, UITheme.PRIMARY);
-        
         btn.setIcon(defIcon);
-        btn.setIconTextGap(12);
-        btn.setFont(UITheme.FONT_BODY);
-        btn.setForeground(UITheme.TEXT_MUTED);
+        btn.setIconTextGap(14);
+        btn.setFont(new Font("Helvetica", Font.PLAIN, 13));
+        btn.setForeground(UITheme.SIDEBAR_TEXT_MUTED);
         btn.setBackground(UITheme.BG_SIDEBAR);
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        btn.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
-        
+        btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
+        btn.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20));
+
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent e) {
-                btn.setBackground(UITheme.BG_CARD); 
-                btn.setForeground(UITheme.PRIMARY);
-                btn.setIcon(hovIcon);
+                if (btn != activeNavBtn) {
+                    btn.setBackground(UITheme.SIDEBAR_HOVER);
+                    btn.setForeground(Color.WHITE);
+                    btn.setIcon(hovIcon);
+                }
             }
             public void mouseExited(java.awt.event.MouseEvent e) {
-                btn.setBackground(UITheme.BG_SIDEBAR); 
-                btn.setForeground(UITheme.TEXT_MUTED);
-                btn.setIcon(defIcon);
+                if (btn != activeNavBtn) {
+                    btn.setBackground(UITheme.BG_SIDEBAR);
+                    btn.setForeground(UITheme.SIDEBAR_TEXT_MUTED);
+                    btn.setIcon(defIcon);
+                }
             }
         });
-        btn.addActionListener(e -> { pageTitle.setText(title); showPanel(panelName); });
+
+        btn.addActionListener(e -> {
+            if (activeNavBtn != null) {
+                activeNavBtn.setBackground(UITheme.BG_SIDEBAR);
+                activeNavBtn.setForeground(UITheme.SIDEBAR_TEXT_MUTED);
+                activeNavBtn.setIcon(new LucideIcon(iconName, 18, UITheme.SIDEBAR_TEXT_MUTED));
+            }
+            activeNavBtn = btn;
+            btn.setBackground(UITheme.SIDEBAR_ACTIVE);
+            btn.setForeground(Color.WHITE);
+            btn.setIcon(hovIcon);
+            showPanel(panelKey, title);
+        });
+
+        return btn;
+    }
+
+    /** White circle button with logout arrow icon */
+    private JButton circleLogoutButton() {
+        JButton btn = new JButton() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(Color.WHITE);
+                g2.fillOval(0, 0, getWidth() - 1, getHeight() - 1);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+            @Override
+            protected void paintBorder(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(191, 219, 254));
+                g2.drawOval(0, 0, getWidth() - 1, getHeight() - 1);
+                g2.dispose();
+            }
+        };
+        btn.setIcon(new LucideIcon("logout", 20, UITheme.PRIMARY));
+        btn.setPreferredSize(new Dimension(48, 48));
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(true);
+        btn.setFocusPainted(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setIcon(new LucideIcon("logout", 20, UITheme.PRIMARY_DARK));
+            }
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setIcon(new LucideIcon("logout", 20, UITheme.PRIMARY));
+            }
+        });
         return btn;
     }
 
     private JSeparator sidebarSep() {
         JSeparator sep = new JSeparator();
-        sep.setForeground(UITheme.BORDER_COLOR);
+        sep.setForeground(UITheme.SIDEBAR_SEPARATOR);
+        sep.setBackground(UITheme.SIDEBAR_SEPARATOR);
         sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         return sep;
     }
 
-    private void showPanel(String panelName) {
+    // ── Panel switching ───────────────────────────────────────────────────────
+
+    private void showPanel(String panelName, String title) {
         contentArea.removeAll();
         JPanel panel;
         switch (panelName) {
@@ -202,6 +226,8 @@ public class AdminDashboardView extends JFrame {
             case "courses":     panel = new AdminCoursesPanel();     break;
             case "departments": panel = new AdminDepartmentsPanel(); break;
             case "degrees":     panel = new AdminDegreesPanel();     break;
+            case "grades":      panel = new AdminGradesPanel();      break;
+            case "settings":    panel = new AdminSettingsPanel(user); break;
             default:            panel = new AdminHomePanel();        break;
         }
         contentArea.add(panel, BorderLayout.CENTER);

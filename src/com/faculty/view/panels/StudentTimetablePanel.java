@@ -1,8 +1,7 @@
 package com.faculty.view.panels;
 
 import com.faculty.model.Student;
-import com.faculty.model.Enrollment;
-import com.faculty.dao.EnrollmentDAO;
+import com.faculty.dao.TimetableDAO;
 import com.faculty.util.UITheme;
 import com.faculty.util.LucideIcon;
 
@@ -11,12 +10,15 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-public class StudentCoursesPanel extends JPanel {
+/**
+ * Panel: Student timetable view with admin-style directory design.
+ */
+public class StudentTimetablePanel extends JPanel {
 
-    private final Student       student;
-    private final EnrollmentDAO enrollDAO = new EnrollmentDAO();
+    private final Student      student;
+    private final TimetableDAO dao = new TimetableDAO();
 
-    public StudentCoursesPanel(Student student) {
+    public StudentTimetablePanel(Student student) {
         this.student = student;
         setBackground(UITheme.BG_DARK);
         setLayout(new BorderLayout(0, 16));
@@ -32,11 +34,11 @@ public class StudentCoursesPanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
 
-        JLabel title = new JLabel("Course Enrolled");
+        JLabel title = new JLabel("Time table");
         title.setFont(new Font("Helvetica", Font.BOLD, 24));
         title.setForeground(UITheme.PRIMARY);
 
-        JLabel subtitle = new JLabel("View your current course enrollments and grade statuses.");
+        JLabel subtitle = new JLabel("View your weekly class schedule, locations, and assigned lecturers.");
         subtitle.setFont(UITheme.FONT_BODY);
         subtitle.setForeground(UITheme.TEXT_MUTED);
 
@@ -48,31 +50,26 @@ public class StudentCoursesPanel extends JPanel {
         add(headerPanel, BorderLayout.NORTH);
 
         // --- TABLE ---
-        String[] cols = {"#", "Course Code", "Course Name", "Grade"};
+        String[] cols = {"Day", "Start", "End", "Course", "Code", "Location", "Lecturer"};
         DefaultTableModel model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) { return false; }
         };
 
         if (student != null) {
-            List<Enrollment> enrollments = enrollDAO.findByStudentId(student.getStudentId());
-            int i = 1;
-            for (Enrollment e : enrollments) {
-                model.addRow(new Object[]{
-                    i++,
-                    e.getCourseCode(),
-                    e.getCourseName(),
-                    e.getGrade() != null ? e.getGrade() : "—"
-                });
-            }
+            List<Object[]> rows = dao.getTimetableForStudent(student.getStudentId());
+            for (Object[] row : rows) model.addRow(row);
         }
 
         JTable table = new JTable(model);
         UITheme.styleTable(table);
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        table.getColumnModel().getColumn(1).setPreferredWidth(120);
-        table.getColumnModel().getColumn(2).setPreferredWidth(300);
-        table.getColumnModel().getColumn(3).setPreferredWidth(80);
+        table.getColumnModel().getColumn(0).setPreferredWidth(90);
+        table.getColumnModel().getColumn(1).setPreferredWidth(70);
+        table.getColumnModel().getColumn(2).setPreferredWidth(70);
+        table.getColumnModel().getColumn(3).setPreferredWidth(200);
+        table.getColumnModel().getColumn(4).setPreferredWidth(90);
+        table.getColumnModel().getColumn(5).setPreferredWidth(110);
+        table.getColumnModel().getColumn(6).setPreferredWidth(150);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         add(UITheme.styledScrollPane(table), BorderLayout.CENTER);
@@ -83,7 +80,7 @@ public class StudentCoursesPanel extends JPanel {
         footerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
 
         int count = model.getRowCount();
-        JLabel pageInfo = new JLabel("Showing " + count + " enrolled course" + (count != 1 ? "s" : ""));
+        JLabel pageInfo = new JLabel("Showing " + count + " schedule entr" + (count != 1 ? "ies" : "y"));
         pageInfo.setFont(UITheme.FONT_SMALL);
         pageInfo.setForeground(UITheme.TEXT_MUTED);
         footerPanel.add(pageInfo, BorderLayout.WEST);

@@ -1,9 +1,7 @@
 package com.faculty.view.panels;
 
-import com.faculty.controller.CourseController;
 import com.faculty.controller.DepartmentController;
-import com.faculty.controller.LecturerController;
-import com.faculty.model.*;
+import com.faculty.model.Department;
 import com.faculty.util.UITheme;
 import com.faculty.util.LucideIcon;
 
@@ -15,20 +13,19 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdminCoursesPanel extends JPanel {
+/**
+ * Panel: Admin - Department CRUD management with search and filters.
+ */
+public class AdminDepartmentsPanel extends JPanel {
 
-    private final CourseController     ctrl      = new CourseController();
-    private final DepartmentController deptCtrl  = new DepartmentController();
-    private final LecturerController   lecCtrl   = new LecturerController();
-
+    private final DepartmentController ctrl = new DepartmentController();
     private JTable            table;
     private DefaultTableModel model;
-    private List<Course>      courses = new ArrayList<>();
+    private List<Department>  departments = new ArrayList<>();
 
     private JTextField        searchField;
-    private JComboBox<Object> deptFilterCombo;
 
-    public AdminCoursesPanel() {
+    public AdminDepartmentsPanel() {
         setBackground(UITheme.BG_DARK);
         setLayout(new BorderLayout(0, 16));
         buildUI();
@@ -44,11 +41,11 @@ public class AdminCoursesPanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
         
-        JLabel title = new JLabel("Courses");
+        JLabel title = new JLabel("Departments");
         title.setFont(new Font("Helvetica", Font.BOLD, 24));
         title.setForeground(UITheme.PRIMARY);
 
-        JLabel subtitle = new JLabel("Manage faculty course offerings, credit metrics, and assigned lecturers.");
+        JLabel subtitle = new JLabel("Manage faculty departments, heads of department, and staffing counts.");
         subtitle.setFont(UITheme.FONT_BODY);
         subtitle.setForeground(UITheme.TEXT_MUTED);
 
@@ -79,7 +76,7 @@ public class AdminCoursesPanel extends JPanel {
         actionBtnGrid.add(deleteBtn);
         headerPanel.add(actionBtnGrid, BorderLayout.EAST);
 
-        // --- SEARCH & FILTER ROW ---
+        // --- SEARCH ROW ---
         JPanel searchFilterPanel = new JPanel(new BorderLayout(12, 0));
         searchFilterPanel.setBackground(UITheme.BG_DARK);
         searchFilterPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 8, 0));
@@ -103,24 +100,6 @@ public class AdminCoursesPanel extends JPanel {
         searchWrapper.add(searchField);
         searchFilterPanel.add(searchWrapper, BorderLayout.WEST);
 
-        // Department filter dropdown
-        JPanel filtersWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-        filtersWrapper.setBackground(UITheme.BG_DARK);
-        
-        JLabel filterLbl = UITheme.label("FILTER BY:");
-        deptFilterCombo = UITheme.styledCombo();
-        deptFilterCombo.setPreferredSize(new Dimension(200, 36));
-        deptFilterCombo.addItem("All Departments");
-        List<Department> depts = deptCtrl.getAllDepartments();
-        for (Department d : depts) {
-            deptFilterCombo.addItem(d);
-        }
-        deptFilterCombo.addActionListener(e -> performFilter());
-
-        filtersWrapper.add(filterLbl);
-        filtersWrapper.add(deptFilterCombo);
-        searchFilterPanel.add(filtersWrapper, BorderLayout.EAST);
-
         JPanel topSection = new JPanel();
         topSection.setLayout(new BoxLayout(topSection, BoxLayout.Y_AXIS));
         topSection.setBackground(UITheme.BG_DARK);
@@ -130,7 +109,7 @@ public class AdminCoursesPanel extends JPanel {
         add(topSection, BorderLayout.NORTH);
 
         // --- TABLE ---
-        String[] cols = {"ID", "Code", "Course Name", "Credits", "Semester", "Department", "Lecturer"};
+        String[] cols = {"ID", "Department Name", "Head of Department", "Staff Count", "Description"};
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) { return false; }
@@ -138,6 +117,7 @@ public class AdminCoursesPanel extends JPanel {
         table = new JTable(model);
         UITheme.styleTable(table);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getColumnModel().getColumn(4).setPreferredWidth(250);
         add(UITheme.styledScrollPane(table), BorderLayout.CENTER);
 
         // --- PAGINATION FOOTER ---
@@ -145,7 +125,7 @@ public class AdminCoursesPanel extends JPanel {
         footerPanel.setBackground(UITheme.BG_DARK);
         footerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         
-        JLabel pageInfo = new JLabel("Showing 1 to " + courses.size() + " entries");
+        JLabel pageInfo = new JLabel("Showing 1 to " + departments.size() + " entries");
         pageInfo.setFont(UITheme.FONT_SMALL);
         pageInfo.setForeground(UITheme.TEXT_MUTED);
         footerPanel.add(pageInfo, BorderLayout.WEST);
@@ -164,36 +144,26 @@ public class AdminCoursesPanel extends JPanel {
     }
 
     private void loadData() {
-        courses = ctrl.getAllCourses();
+        departments = ctrl.getAllDepartments();
         performFilter();
     }
 
     private void performFilter() {
         model.setRowCount(0);
         String query = searchField.getText().toLowerCase().trim();
-        Object selectedDept = deptFilterCombo.getSelectedItem();
         
-        for (Course c : courses) {
-            // Text filter
-            boolean matchesQuery = c.getCourseName().toLowerCase().contains(query) ||
-                                   c.getCourseCode().toLowerCase().contains(query) ||
-                                   (c.getDescription() != null && c.getDescription().toLowerCase().contains(query));
+        for (Department d : departments) {
+            boolean matchesQuery = d.getDeptName().toLowerCase().contains(query) ||
+                                   (d.getHodName() != null && d.getHodName().toLowerCase().contains(query)) ||
+                                   (d.getDescription() != null && d.getDescription().toLowerCase().contains(query));
             
-            // Department filter
-            boolean matchesDept = true;
-            if (selectedDept instanceof Department) {
-                matchesDept = c.getDepartmentId() == ((Department) selectedDept).getDepartmentId();
-            }
-            
-            if (matchesQuery && matchesDept) {
+            if (matchesQuery) {
                 model.addRow(new Object[]{
-                    c.getCourseId(),
-                    c.getCourseCode(),
-                    c.getCourseName(),
-                    c.getCredits(),
-                    c.getSemester(),
-                    c.getDepartmentName() != null ? c.getDepartmentName() : "—",
-                    c.getLecturerName() != null ? c.getLecturerName() : "—"
+                    d.getDepartmentId(),
+                    d.getDeptName(),
+                    d.getHodName() != null ? d.getHodName() : "—",
+                    d.getStaffCount(),
+                    d.getDescription() != null ? d.getDescription() : "—"
                 });
             }
         }
@@ -201,26 +171,26 @@ public class AdminCoursesPanel extends JPanel {
 
     private void editSelected() {
         int row = table.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Select a course to edit."); return; }
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Select a department to edit."); return; }
         int id = (int) model.getValueAt(row, 0);
-        Course found = null;
-        for (Course c : courses) {
-            if (c.getCourseId() == id) { found = c; break; }
+        Department found = null;
+        for (Department d : departments) {
+            if (d.getDepartmentId() == id) { found = d; break; }
         }
         if (found != null) showForm(found);
     }
 
     private void deleteSelected() {
         int row = table.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Select a course to delete."); return; }
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Select a department to delete."); return; }
         int id = (int) model.getValueAt(row, 0);
-        if (ctrl.deleteCourse(id)) loadData();
+        if (ctrl.deleteDepartment(id)) loadData();
     }
 
-    private void showForm(Course course) {
+    private void showForm(Department dept) {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-            course == null ? "Add Course" : "Edit Course", true);
-        dialog.setSize(500, 500);
+            dept == null ? "Add Department" : "Edit Department", true);
+        dialog.setSize(460, 380);
         dialog.setLocationRelativeTo(this);
         dialog.getContentPane().setBackground(UITheme.BG_CARD);
 
@@ -233,63 +203,40 @@ public class AdminCoursesPanel extends JPanel {
         gbc.fill   = GridBagConstraints.HORIZONTAL;
         gbc.weightx= 1.0;
 
-        JTextField codeField = UITheme.styledField();
-        JTextField nameField = UITheme.styledField();
-        JTextField credField = UITheme.styledField();
-        JTextField semField  = UITheme.styledField();
-        JComboBox<Department> deptCombo = UITheme.styledCombo();
-        JComboBox<Lecturer>   lecCombo  = UITheme.styledCombo();
+        JTextField nameField  = UITheme.styledField();
+        JTextField hodField   = UITheme.styledField();
+        JTextField countField = UITheme.styledField();
+        JTextArea  descArea   = UITheme.styledTextArea();
 
-        List<Department> depts = deptCtrl.getAllDepartments();
-        for (Department d : depts) deptCombo.addItem(d);
-
-        List<Lecturer> lecs = lecCtrl.getAllLecturers();
-        lecCombo.addItem(new Lecturer()); // blank option
-        for (Lecturer l : lecs) lecCombo.addItem(l);
-
-        if (course != null) {
-            codeField.setText(course.getCourseCode());
-            nameField.setText(course.getCourseName());
-            credField.setText(String.valueOf(course.getCredits()));
-            semField.setText(String.valueOf(course.getSemester()));
-            for (int i = 0; i < deptCombo.getItemCount(); i++) {
-                if (((Department) deptCombo.getItemAt(i)).getDepartmentId() == course.getDepartmentId()) {
-                    deptCombo.setSelectedIndex(i); break;
-                }
-            }
-            for (int i = 0; i < lecCombo.getItemCount(); i++) {
-                Lecturer l = (Lecturer) lecCombo.getItemAt(i);
-                if (l != null && l.getLecturerId() == course.getLecturerId()) {
-                    lecCombo.setSelectedIndex(i); break;
-                }
-            }
+        if (dept != null) {
+            nameField.setText(dept.getDeptName());
+            hodField.setText(dept.getHodName());
+            countField.setText(String.valueOf(dept.getStaffCount()));
+            descArea.setText(dept.getDescription());
         }
 
         int row = 0;
-        row = addRow(panel, gbc, row, "Course Code", codeField);
-        row = addRow(panel, gbc, row, "Course Name", nameField);
-        row = addRow(panel, gbc, row, "Credits",     credField);
-        row = addRow(panel, gbc, row, "Semester",    semField);
-        gbc.gridx = 0; gbc.gridy = row; panel.add(UITheme.label("Department"), gbc);
-        gbc.gridx = 1; panel.add(deptCombo, gbc); row++;
-        gbc.gridx = 0; gbc.gridy = row; panel.add(UITheme.label("Lecturer"),   gbc);
-        gbc.gridx = 1; panel.add(lecCombo, gbc);  row++;
+        row = addRow(panel, gbc, row, "Department Name", nameField);
+        row = addRow(panel, gbc, row, "Head of Dept",    hodField);
+        row = addRow(panel, gbc, row, "Staff Count",     countField);
+
+        gbc.gridx = 0; gbc.gridy = row; panel.add(UITheme.label("Description"), gbc);
+        gbc.gridx = 1;
+        JScrollPane descSP = new JScrollPane(descArea);
+        descSP.setPreferredSize(new Dimension(250, 70));
+        panel.add(descSP, gbc); row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2; gbc.insets = new Insets(16, 6, 6, 6);
-        JButton saveBtn = UITheme.primaryButton(course == null ? "Add Course" : "Save Changes");
+        JButton saveBtn = UITheme.primaryButton(dept == null ? "Add Department" : "Save Changes");
         saveBtn.setPreferredSize(new Dimension(Integer.MAX_VALUE, 40));
         saveBtn.addActionListener(e -> {
-            Course c = course == null ? new Course() : course;
-            c.setCourseCode(codeField.getText().trim());
-            c.setCourseName(nameField.getText().trim());
-            try { c.setCredits(Integer.parseInt(credField.getText().trim())); } catch (NumberFormatException ex) { c.setCredits(3); }
-            try { c.setSemester(Integer.parseInt(semField.getText().trim())); } catch (NumberFormatException ex) { c.setSemester(1); }
-            Department dept = (Department) deptCombo.getSelectedItem();
-            if (dept != null) c.setDepartmentId(dept.getDepartmentId());
-            Lecturer lec = (Lecturer) lecCombo.getSelectedItem();
-            if (lec != null) c.setLecturerId(lec.getLecturerId());
+            Department d = dept == null ? new Department() : dept;
+            d.setDeptName(nameField.getText().trim());
+            d.setHodName(hodField.getText().trim());
+            try { d.setStaffCount(Integer.parseInt(countField.getText().trim())); } catch (NumberFormatException ex) { d.setStaffCount(0); }
+            d.setDescription(descArea.getText().trim());
 
-            boolean ok = course == null ? ctrl.addCourse(c) : ctrl.updateCourse(c);
+            boolean ok = dept == null ? ctrl.addDepartment(d) : ctrl.updateDepartment(d);
             if (ok) { dialog.dispose(); loadData(); }
         });
         panel.add(saveBtn, gbc);

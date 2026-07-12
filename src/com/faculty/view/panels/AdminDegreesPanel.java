@@ -1,9 +1,9 @@
 package com.faculty.view.panels;
 
-import com.faculty.controller.StudentController;
 import com.faculty.controller.DegreeController;
-import com.faculty.dao.UserDAO;
-import com.faculty.model.*;
+import com.faculty.controller.DepartmentController;
+import com.faculty.model.Degree;
+import com.faculty.model.Department;
 import com.faculty.util.UITheme;
 import com.faculty.util.LucideIcon;
 
@@ -16,22 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Panel: Admin - Student CRUD management with search and filters.
+ * Panel: Admin - Degree CRUD management with search and filters.
  */
-public class AdminStudentsPanel extends JPanel {
+public class AdminDegreesPanel extends JPanel {
 
-    private final StudentController ctrl       = new StudentController();
-    private final DegreeController  degreeCtrl = new DegreeController();
-    private final UserDAO           userDAO    = new UserDAO();
+    private final DegreeController ctrl = new DegreeController();
+    private final DepartmentController deptCtrl = new DepartmentController();
+    private JTable table;
+    private DefaultTableModel model;
+    private List<Degree> degrees = new ArrayList<>();
 
-    private JTable             table;
-    private DefaultTableModel  model;
-    private List<Student>      students = new ArrayList<>();
+    private JTextField        searchField;
+    private JComboBox<Object> deptFilterCombo;
 
-    private JTextField         searchField;
-    private JComboBox<Object>  degreeFilterCombo;
-
-    public AdminStudentsPanel() {
+    public AdminDegreesPanel() {
         setBackground(UITheme.BG_DARK);
         setLayout(new BorderLayout(0, 16));
         buildUI();
@@ -39,7 +37,7 @@ public class AdminStudentsPanel extends JPanel {
     }
 
     private void buildUI() {
-        // --- HEADER ROW ---
+        // --- HEADER ROW (Title & Add Button) ---
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(UITheme.BG_DARK);
 
@@ -47,11 +45,11 @@ public class AdminStudentsPanel extends JPanel {
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBackground(UITheme.BG_DARK);
         
-        JLabel title = new JLabel("Students");
+        JLabel title = new JLabel("Degrees");
         title.setFont(new Font("Helvetica", Font.BOLD, 24));
         title.setForeground(UITheme.PRIMARY);
 
-        JLabel subtitle = new JLabel("Manage student profiles, enrollments, and academic performance.");
+        JLabel subtitle = new JLabel("Manage faculty degree programs, code systems, and durations.");
         subtitle.setFont(UITheme.FONT_BODY);
         subtitle.setForeground(UITheme.TEXT_MUTED);
 
@@ -60,6 +58,7 @@ public class AdminStudentsPanel extends JPanel {
         titlePanel.add(subtitle);
         headerPanel.add(titlePanel, BorderLayout.WEST);
 
+        // Right Actions (Add / Edit / Delete)
         JPanel actionBtnGrid = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         actionBtnGrid.setBackground(UITheme.BG_DARK);
         
@@ -105,22 +104,22 @@ public class AdminStudentsPanel extends JPanel {
         searchWrapper.add(searchField);
         searchFilterPanel.add(searchWrapper, BorderLayout.WEST);
 
-        // Filters dropdown
+        // Department filter dropdown
         JPanel filtersWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         filtersWrapper.setBackground(UITheme.BG_DARK);
         
         JLabel filterLbl = UITheme.label("FILTER BY:");
-        degreeFilterCombo = UITheme.styledCombo();
-        degreeFilterCombo.setPreferredSize(new Dimension(200, 36));
-        degreeFilterCombo.addItem("All Degrees");
-        List<Degree> degrees = degreeCtrl.getAllDegrees();
-        for (Degree d : degrees) {
-            degreeFilterCombo.addItem(d);
+        deptFilterCombo = UITheme.styledCombo();
+        deptFilterCombo.setPreferredSize(new Dimension(200, 36));
+        deptFilterCombo.addItem("All Departments");
+        List<Department> depts = deptCtrl.getAllDepartments();
+        for (Department d : depts) {
+            deptFilterCombo.addItem(d);
         }
-        degreeFilterCombo.addActionListener(e -> performFilter());
+        deptFilterCombo.addActionListener(e -> performFilter());
 
         filtersWrapper.add(filterLbl);
-        filtersWrapper.add(degreeFilterCombo);
+        filtersWrapper.add(deptFilterCombo);
         searchFilterPanel.add(filtersWrapper, BorderLayout.EAST);
 
         JPanel topSection = new JPanel();
@@ -132,7 +131,7 @@ public class AdminStudentsPanel extends JPanel {
         add(topSection, BorderLayout.NORTH);
 
         // --- TABLE ---
-        String[] cols = {"ID", "Student Number", "Full Name", "Email", "Mobile", "Degree", "Year"};
+        String[] cols = {"ID", "Degree Code", "Degree Name", "Department", "Duration (Years)", "Description"};
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) { return false; }
@@ -140,6 +139,7 @@ public class AdminStudentsPanel extends JPanel {
         table = new JTable(model);
         UITheme.styleTable(table);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getColumnModel().getColumn(5).setPreferredWidth(250);
         add(UITheme.styledScrollPane(table), BorderLayout.CENTER);
 
         // --- PAGINATION FOOTER ---
@@ -147,7 +147,7 @@ public class AdminStudentsPanel extends JPanel {
         footerPanel.setBackground(UITheme.BG_DARK);
         footerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         
-        JLabel pageInfo = new JLabel("Showing 1 to " + students.size() + " entries");
+        JLabel pageInfo = new JLabel("Showing 1 to " + degrees.size() + " entries");
         pageInfo.setFont(UITheme.FONT_SMALL);
         pageInfo.setForeground(UITheme.TEXT_MUTED);
         footerPanel.add(pageInfo, BorderLayout.WEST);
@@ -166,36 +166,35 @@ public class AdminStudentsPanel extends JPanel {
     }
 
     private void loadData() {
-        students = ctrl.getAllStudents();
+        degrees = ctrl.getAllDegrees();
         performFilter();
     }
 
     private void performFilter() {
         model.setRowCount(0);
         String query = searchField.getText().toLowerCase().trim();
-        Object selectedDegree = degreeFilterCombo.getSelectedItem();
+        Object selectedDept = deptFilterCombo.getSelectedItem();
         
-        for (Student s : students) {
-            // Text query matches
-            boolean matchesQuery = s.getFullName().toLowerCase().contains(query) ||
-                                   s.getStudentNumber().toLowerCase().contains(query) ||
-                                   (s.getEmail() != null && s.getEmail().toLowerCase().contains(query));
+        for (Degree d : degrees) {
+            // Text search
+            boolean matchesQuery = d.getDegreeName().toLowerCase().contains(query) ||
+                                   d.getDegreeCode().toLowerCase().contains(query) ||
+                                   (d.getDescription() != null && d.getDescription().toLowerCase().contains(query));
             
-            // Degree matches
-            boolean matchesDegree = true;
-            if (selectedDegree instanceof Degree) {
-                matchesDegree = s.getDegreeId() == ((Degree) selectedDegree).getDegreeId();
+            // Department filter
+            boolean matchesDept = true;
+            if (selectedDept instanceof Department) {
+                matchesDept = d.getDepartmentId() == ((Department) selectedDept).getDepartmentId();
             }
             
-            if (matchesQuery && matchesDegree) {
+            if (matchesQuery && matchesDept) {
                 model.addRow(new Object[]{
-                    s.getStudentId(),
-                    s.getStudentNumber(),
-                    s.getFullName(),
-                    s.getEmail(),
-                    s.getMobile(),
-                    s.getDegreeName() != null ? s.getDegreeName() : "—",
-                    s.getYearOfStudy()
+                    d.getDegreeId(),
+                    d.getDegreeCode(),
+                    d.getDegreeName(),
+                    d.getDepartmentName() != null ? d.getDepartmentName() : "—",
+                    d.getDurationYears(),
+                    d.getDescription() != null ? d.getDescription() : "—"
                 });
             }
         }
@@ -203,26 +202,26 @@ public class AdminStudentsPanel extends JPanel {
 
     private void editSelected() {
         int row = table.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Please select a student to edit."); return; }
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Select a degree to edit."); return; }
         int id = (int) model.getValueAt(row, 0);
-        Student found = null;
-        for (Student s : students) {
-            if (s.getStudentId() == id) { found = s; break; }
+        Degree found = null;
+        for (Degree d : degrees) {
+            if (d.getDegreeId() == id) { found = d; break; }
         }
         if (found != null) showForm(found);
     }
 
     private void deleteSelected() {
         int row = table.getSelectedRow();
-        if (row < 0) { JOptionPane.showMessageDialog(this, "Please select a student to delete."); return; }
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Select a degree to delete."); return; }
         int id = (int) model.getValueAt(row, 0);
-        if (ctrl.deleteStudent(id)) loadData();
+        if (ctrl.deleteDegree(id)) loadData();
     }
 
-    private void showForm(Student student) {
+    private void showForm(Degree degree) {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-            student == null ? "Add Student" : "Edit Student", true);
-        dialog.setSize(500, 540);
+            degree == null ? "Add Degree" : "Edit Degree", true);
+        dialog.setSize(460, 420);
         dialog.setLocationRelativeTo(this);
         dialog.getContentPane().setBackground(UITheme.BG_CARD);
 
@@ -235,85 +234,80 @@ public class AdminStudentsPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        JTextField nameField    = UITheme.styledField();
-        JTextField numField     = UITheme.styledField();
-        JTextField emailField   = UITheme.styledField();
-        JTextField mobileField  = UITheme.styledField();
-        JTextField yearField    = UITheme.styledField();
-        JTextField userField    = UITheme.styledField();
-        JPasswordField passField= UITheme.styledPasswordField();
-        JComboBox<Degree> degreeCombo = UITheme.styledCombo();
+        JTextField codeField = UITheme.styledField();
+        JTextField nameField = UITheme.styledField();
+        JTextField durField = UITheme.styledField();
+        JTextArea descArea = UITheme.styledTextArea();
+        JComboBox<Department> deptCombo = UITheme.styledCombo();
 
-        List<Degree> degrees = degreeCtrl.getAllDegrees();
-        for (Degree d : degrees) degreeCombo.addItem(d);
+        List<Department> depts = deptCtrl.getAllDepartments();
+        for (Department dept : depts) {
+            deptCombo.addItem(dept);
+        }
 
-        if (student != null) {
-            nameField.setText(student.getFullName());
-            numField.setText(student.getStudentNumber());
-            emailField.setText(student.getEmail());
-            mobileField.setText(student.getMobile());
-            yearField.setText(String.valueOf(student.getYearOfStudy()));
-            userField.setEnabled(false);
-            passField.setEnabled(false);
-            userField.setText("(existing user)");
-            for (int i = 0; i < degreeCombo.getItemCount(); i++) {
-                if (((Degree) degreeCombo.getItemAt(i)).getDegreeId() == student.getDegreeId()) {
-                    degreeCombo.setSelectedIndex(i); break;
+        if (degree != null) {
+            codeField.setText(degree.getDegreeCode());
+            nameField.setText(degree.getDegreeName());
+            durField.setText(String.valueOf(degree.getDurationYears()));
+            descArea.setText(degree.getDescription());
+            for (int i = 0; i < deptCombo.getItemCount(); i++) {
+                if (((Department) deptCombo.getItemAt(i)).getDepartmentId() == degree.getDepartmentId()) {
+                    deptCombo.setSelectedIndex(i);
+                    break;
                 }
             }
         }
 
         int row = 0;
-        row = addDialogRow(panel, gbc, row, "Full Name",       nameField);
-        row = addDialogRow(panel, gbc, row, "Student Number",  numField);
-        row = addDialogRow(panel, gbc, row, "Email",           emailField);
-        row = addDialogRow(panel, gbc, row, "Mobile",          mobileField);
-        row = addDialogRow(panel, gbc, row, "Year of Study",   yearField);
+        row = addRow(panel, gbc, row, "Degree Code", codeField);
+        row = addRow(panel, gbc, row, "Degree Name", nameField);
+        row = addRow(panel, gbc, row, "Duration (Years)", durField);
 
-        gbc.gridx = 0; gbc.gridy = row; panel.add(UITheme.label("Degree"), gbc);
-        gbc.gridx = 1; panel.add(degreeCombo, gbc); row++;
+        gbc.gridx = 0; gbc.gridy = row;
+        panel.add(UITheme.label("Department"), gbc);
+        gbc.gridx = 1;
+        panel.add(deptCombo, gbc);
+        row++;
 
-        if (student == null) {
-            row = addDialogRow(panel, gbc, row, "Username", userField);
-            gbc.gridx = 0; gbc.gridy = row; panel.add(UITheme.label("Password"), gbc);
-            gbc.gridx = 1; panel.add(passField, gbc); row++;
-        }
+        gbc.gridx = 0; gbc.gridy = row;
+        panel.add(UITheme.label("Description"), gbc);
+        gbc.gridx = 1;
+        JScrollPane descSP = new JScrollPane(descArea);
+        descSP.setPreferredSize(new Dimension(250, 70));
+        panel.add(descSP, gbc);
+        row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 2;
         gbc.insets = new Insets(16, 6, 6, 6);
-        JButton saveBtn = UITheme.primaryButton(student == null ? "Add Student" : "Save Changes");
+        JButton saveBtn = UITheme.primaryButton(degree == null ? "Add Degree" : "Save Changes");
         saveBtn.setPreferredSize(new Dimension(Integer.MAX_VALUE, 40));
         saveBtn.addActionListener(e -> {
-            Student s = student == null ? new Student() : student;
-            s.setFullName(nameField.getText().trim());
-            s.setStudentNumber(numField.getText().trim());
-            s.setEmail(emailField.getText().trim());
-            s.setMobile(mobileField.getText().trim());
-            try { s.setYearOfStudy(Integer.parseInt(yearField.getText().trim())); } catch (NumberFormatException ex) { s.setYearOfStudy(1); }
-            Degree deg = (Degree) degreeCombo.getSelectedItem();
-            if (deg != null) s.setDegreeId(deg.getDegreeId());
-
-            boolean ok;
-            if (student == null) {
-                String uname = userField.getText().trim();
-                String pwd   = new String(passField.getPassword()).trim();
-                User newUser = new User(0, uname, pwd, "STUDENT", s.getEmail());
-                int uid = userDAO.insert(newUser);
-                if (uid < 0) { JOptionPane.showMessageDialog(dialog, "Failed to create user account."); return; }
-                s.setUserId(uid);
-                ok = ctrl.addStudent(s);
-            } else {
-                ok = ctrl.updateStudent(s);
+            Degree d = degree == null ? new Degree() : degree;
+            d.setDegreeCode(codeField.getText().trim());
+            d.setDegreeName(nameField.getText().trim());
+            try {
+                d.setDurationYears(Integer.parseInt(durField.getText().trim()));
+            } catch (NumberFormatException ex) {
+                d.setDurationYears(3);
             }
-            if (ok) { dialog.dispose(); loadData(); }
+            d.setDescription(descArea.getText().trim());
+            Department dept = (Department) deptCombo.getSelectedItem();
+            if (dept != null) {
+                d.setDepartmentId(dept.getDepartmentId());
+            }
+
+            boolean ok = degree == null ? ctrl.addDegree(d) : ctrl.updateDegree(d);
+            if (ok) {
+                dialog.dispose();
+                loadData();
+            }
         });
         panel.add(saveBtn, gbc);
-
         dialog.add(panel);
         dialog.setVisible(true);
     }
 
-    private int addDialogRow(JPanel p, GridBagConstraints gbc, int row, String label, JComponent field) {
+    private int addRow(JPanel p, GridBagConstraints gbc, int row, String label, JComponent field) {
         gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 1; gbc.insets = new Insets(6, 6, 6, 6);
         p.add(UITheme.label(label), gbc);
         gbc.gridx = 1;
